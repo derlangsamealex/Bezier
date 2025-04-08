@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bezier</title>
+		<script language="javascript" type="text/javascript" src="Bezier.js"></script>
+    </head>
+    <body>
+      <div width=100% height=100% style="position:absolute; top:0; left:0; width:100%; height:100%">
+        <svg width=100% height=98%>
+        </svg>
+      </div>
+      <script>
+function SvgElement(str,obj) {
+  let output=document.createElementNS("http://www.w3.org/2000/svg",str);
+  for(prop in obj) {
+    output.setAttribute(prop, obj[prop]);
+  }
+  return output;
+}
+//change resp. give properties to target Svgelement
+function svgChgProp(target,obj) {
+  for(prop in obj) {
+    target.setAttribute(prop, obj[prop]);
+  }
+}
+function MovePoint(x,y) {
+  this.x=x;
+  this.y=y;
+  this.svg={
+    circle: new SvgElement("circle",{
+      cx: x,
+      cy: y,
+      r: 3,
+      fill: "red"
+    }),
+    tp: new SvgElement("circle",{ //touchpoint
+      cx: x,
+      cy: y,
+      r: 20,
+      fill: "grey",
+      "fill-opacity": 0
+    })
+  };  
+  for([key, obj] of Object.entries(this.svg)) {
+    svg.appendChild(obj);  
+  }
+  this.move=function(x,y) {
+    this.x=x;
+    this.y=y;
+    for([key, obj] of Object.entries(this.svg)) { 
+      svgChgProp(obj,{
+        cx: x,
+        cy: y  
+      });
+    }
+  }
+}
+function Line(x1,y1,x2,y2) {
+  this.svg=new SvgElement("line",{
+    x1: x1,
+    y1: y1,
+    x2: x2,
+    y2: y2,
+    stroke: "black",
+    "stroke-width": 3
+  });
+  svg.appendChild(this.svg);
+  this.move=function(x1,y1,x2,y2) {
+    svgChgProp(this.svg,{
+      x1: x1,
+      y1: y1,
+      x2: x2,
+      y2: y2
+    });
+  }
+}
+function Bezier(arr) {
+  this.point=[];
+  for(i in arr) { 
+    this.point[i]={
+      x:arr[i].x,
+      y:arr[i].y
+    }
+  } 
+  this.points="M"+this.point[0].x+" "+this.point[0].y+" Q"+this.point[1].x+" "+this.point[1].y+" "+this.point[2].x+" "+this.point[2].y+" Q"+this.point[3].x+" "+this.point[3].y+" "+this.point[4].x+" "+this.point[4].y+" Q"+this.point[5].x+" "+this.point[5].y+" "+this.point[6].x+" "+this.point[6].y+" Q"+this.point[7].x+" "+this.point[7].y+" "+this.point[0].x+" "+this.point[0].y; 
+  this.svg=new SvgElement("path",{
+    d: this.points,
+    fill:"brown"
+  });
+  this.text=new SvgElement("text",{
+    x:5,
+    y:15,
+    "font-size":6
+  });
+  svg.appendChild(this.svg);
+  svg.appendChild(this.text);
+  this.text.innerHTML=this.points;
+  this.move=function(arr) {
+    for(i in arr) { 
+      this.point[i].x=arr[i].x;
+      this.point[i].y=arr[i].y;
+    }  
+    this.points="M"+this.point[0].x+" "+this.point[0].y+" Q"+this.point[1].x+" "+this.point[1].y+" "+this.point[2].x+" "+this.point[2].y+" Q"+this.point[3].x+" "+this.point[3].y+" "+this.point[4].x+" "+this.point[4].y+" Q"+this.point[5].x+" "+this.point[5].y+" "+this.point[6].x+" "+this.point[6].y+" Q"+this.point[7].x+" "+this.point[7].y+" "+this.point[0].x+" "+this.point[0].y;    
+    svgChgProp(this.svg,{
+      d: this.points
+    });
+    this.text.innerHTML=this.points;
+  }
+}
+var svg=document.getElementsByTagName("svg")[0];
+var targetC=-1;
+var bow=0;
+point=[];
+c=[];
+tp=[];
+l=[];
+      </script>
+    </body>
+</html>
